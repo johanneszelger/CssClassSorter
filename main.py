@@ -3,7 +3,7 @@ import re
 import sys
 
 media = "(sm|md|lg|xl|2xl):"
-colors = "(primary|light|dark|white|surface|color-secondary|[0-9]+|[a-z]+-[0-9]+)"
+colors = "(primary|light|dark|white|surface|color-secondary|[0-9]+|[a-z]+(-[a-z]+)*-[0-9]+)"
 sizes = "(none|xs|sm|md|lg|xl|2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl|10xl|full)"
 weights = "(thin|extralight|light|normal|medium|semibold|bold|extrabold|black)"
 state = ("(hover|active|visited|focus|disabled|first|last|odd|even|group-hover|group-focus|focus-within|checked):")
@@ -211,6 +211,7 @@ class_weights[re.compile(r'^list-(none|disc|decimal)$')] = curr_weight
 ##################################
 ########### ANIMATION ###########
 ##################################
+# TODO
 
 # Default weight for classes that don't match any pattern
 default_weight = 99999
@@ -270,7 +271,7 @@ def sort_class_names(html_content):
     def sort_classes(match):
         full_match = match.group(0)
         class_names = match.group(1).split()
-        sorted_class_names = sorted(class_names, key=lambda x: (get_class_weight(x)))
+        sorted_class_names = sorted(class_names, key=lambda x: (get_class_weight(x), x))
         return full_match.replace(match.group(1), " ".join(sorted_class_names))
 
     # This regex finds class attributes and captures their values for sorting
