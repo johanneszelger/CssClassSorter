@@ -1,6 +1,9 @@
+import logging
 import os
 import re
 import sys
+
+logging.basicConfig(level=logging.DEBUG)
 
 media = "(sm|md|lg|xl|2xl):"
 colors = "(primary|light|dark|white|surface|color-secondary|[0-9]+|[a-z]+(-[a-z]+)*-[0-9]+)"
@@ -234,9 +237,13 @@ for pattern, weight in class_weights.items():
 
 def get_class_weight(class_name):
     """Get the weight for a class name based on defined patterns."""
+    logging.debug(f"Class name: {class_name}")
     for pattern, weight in enriched_class_weights.items():
         if pattern.match(class_name):
+            logging.debug(f"matched: {pattern.pattern} with weight: {weight}")
             return weight
+
+    logging.debug(f"no match for: {class_name}")
     return default_weight
 
 
@@ -262,7 +269,7 @@ directory_to_search = sys.argv[1]
 html_files_found = find_files_with_ext(directory_to_search, ".html")
 
 # Print the list of found SCSS files
-print(f"Found HTML files:\n{html_files_found}")
+logging.info(f"Found HTML files:\n{html_files_found}")
 
 
 def sort_class_names(html_content):
@@ -289,7 +296,7 @@ def process_html_file(file_path):
         file.write(sorted_html_content)
         file.truncate()
 
-        print(f'Processed {file_path}')
+        logging.info(f'Processed {file_path}')
 
 
 for f in html_files_found:
