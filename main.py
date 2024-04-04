@@ -218,20 +218,22 @@ default_weight = 99999
 ##################################
 ##### States and responsive ######
 ##################################
+enriched_class_weights = {}
 for pattern, weight in class_weights.items():
-    class_weights[re.compile(f'{state}{pattern.pattern}')] = weight + 0.1
-    class_weights[re.compile(f'{media}{pattern.pattern}')] = weight + 0.2
-    class_weights[re.compile(f'{media}{state}{pattern.pattern}')] = weight + 0.3
+    enriched_class_weights[re.compile(f'{pattern.pattern}')] = weight
+    enriched_class_weights[re.compile(f'{state}{pattern.pattern}')] = weight + 0.1
+    enriched_class_weights[re.compile(f'{media}{pattern.pattern}')] = weight + 0.2
+    enriched_class_weights[re.compile(f'{media}{state}{pattern.pattern}')] = weight + 0.3
 
     # dark mode
-    class_weights[re.compile(f'dark:{state}{pattern.pattern}')] = weight + 0.4
-    class_weights[re.compile(f'dark:{media}{pattern.pattern}')] = weight + 0.5
-    class_weights[re.compile(f'dark:{media}{state}{pattern.pattern}')] = weight + 0.6
+    enriched_class_weights[re.compile(f'dark:{state}{pattern.pattern}')] = weight + 0.4
+    enriched_class_weights[re.compile(f'dark:{media}{pattern.pattern}')] = weight + 0.5
+    enriched_class_weights[re.compile(f'dark:{media}{state}{pattern.pattern}')] = weight + 0.6
 
 
 def get_class_weight(class_name):
     """Get the weight for a class name based on defined patterns."""
-    for pattern, weight in class_weights.items():
+    for pattern, weight in enriched_class_weights.items():
         if pattern.match(class_name):
             return weight
     return default_weight
